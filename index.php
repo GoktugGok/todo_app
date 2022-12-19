@@ -28,6 +28,7 @@ if (isset($_GET['route'])){
 if (isset($result['lang'])){
     if (file_exists(BASEDIR.'/language/'.$result['lang'].'.php')) {
         $config['lang'] = $result['lang'];
+        require BASEDIR.'/language/'.$config['lang'].'.php';
     }else{
         $config['lang'] = 'tr';
     }
@@ -37,10 +38,12 @@ if (isset($result['route'])){
     $config['route'] = explode('/', $result['route']);
 }
 
-require BASEDIR.'/language/'.$config['lang'].'.php';
 
 if (file_exists(BASEDIR.'/Controller/'.$config['route'][0].'.php')) {
     require BASEDIR.'/Controller/'.$config['route'][0].'.php';
 }else{
     echo 'Bu sayfa bulunamadı!';
 }
+
+if (isset($_SESSION['error'])) $_SESSION['error'] = null;
+if (isset($_SESSION['post'])) $_SESSION['post'] = null;
