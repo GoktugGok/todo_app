@@ -1,19 +1,19 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="<?= URL('home') ?>" class="brand-link">
+    <a href="<?= URL('home') ?>" class="brand-link pl-4">
       <i class="fa fa-check"></i>
-    <span class="brand-text font-weight-light">TodoApp </span>
+    <span class="brand-text font-weight-light pl-2">TodoApp </span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="user-panel mt-3 pb-3 mb-3 pl-3 d-flex">
         <div class="image d-flex bg-warning  align-items-center justify-content-center p-2">
-          <i class="fa fa-user"></i>
+          <i class="fa fa-user " ></i>
         </div>
         <div class="info ">
-          <a href="<?= url('profile') ?>" class="d-block"><?= get_session('fullname') ?></a>
+          <a href="<?= url('profile') ?>" class="d-block pl-2"><?= get_session('fullname') ?></a>
         </div>
       </div>
 
@@ -75,13 +75,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="<?= url('category/add') ?>" class="nav-link">
+                <a href="<?= url('categories/add') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Yeni Ekle</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?= url('category/list') ?>" class="nav-link">
+                <a href="<?= url('categories/list') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Listele</p>
                 </a>

@@ -11,7 +11,7 @@
   <div class="card">
     <div class="card-body login-card-body">
       <p class="login-box-msg"><?= lang('Oturum Açın'); ?></p>
-      <?php echo get_session('error') != false ? '<div class="alert alert-'.$_SESSION['error']['type'].'">'.$_SESSION['error']['message'].'</div>' : null ?>
+      <?php echo get_session('error') ? '<div class="alert alert-'.$_SESSION['error']['type'].'">'.$_SESSION['error']['message'].'</div>' : null ?>
       <form action="<?= URL.'tr/login' ?>" method="post">
         <div class="input-group mb-3">
             <?= get_session('hata2') ?>
