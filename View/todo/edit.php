@@ -20,18 +20,71 @@
           <div class="col-lg-12">
             <div class="card card-primary">
                 <div class="card-header">
-                  <h3 class="card-title">Kategori Ekle</h3>
+                  <h3 class="card-title">Yapılacaklar Listenize Ekleyin</h3>
                 </div>
-                <?php  echo get_session('error') ? '<div class="alert alert-'.$_SESSION['error']['type'].'">'.$_SESSION['error']['message'].'</div>' : null ?>
+                <?php echo get_session('error') ? '<div class="alert alert-'.$_SESSION['error']['type'].'">'.$_SESSION['error']['message'].'</div>' : null ?>
 
-                <form action="" method="post">
+                <form id="todo" action="" method="post">
+                  <input id="id" type="hidden" value="<?= $data['id']; ?>">
                   <div class="card-body">
                     <div class="form-group">
-                        <label for="title">Kategori Başlığı</label>
-                        <input type="text" class="form-control" id="title" name="title" value="<?= $data['title'];  ?>" placeholder="Kategori adı giriniz">
-                        <input type="hidden" class="form-control" id="id" name="id" value="<?= $data['id']; ?>">
+                        <label for="title">Kategori Seçiniz</label>
+                        <select class="form-control" id="category_id">
+                          <option value="0">- Kategori Seçimi Yapınız -</option>
+                          <?php  foreach ($data['categories'] as $category): ?>
+                            <option <?= $data['category_id'] == $category['id'] ? 'selected="selected"' :null; ?> value="<?= $category['id'] ?>"><?= $category['title'] ?></option>
+                          <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="title">Başlık</label>
+                      <input type="text" class="form-control" id="title" value="<?= $data['title']?>" name="title" placeholder="Ne yapacaksınız">
+                    </div>
+                    <div class="form-group">
+                      <label for="description">Açıklama</label>
+                      <input type="text" class="form-control" id="description" value="<?= $data['description']?>" name="description" placeholder="Ne yapacaksınız">
+                    </div>
+                    <div class="form-group">
+                      <label for="status">Durum</label>
+                      <select id="status" class="form-control">
+                        <option <?= $data['status'] == 'a' ? 'selected="selected"':null;?> value="a">Aktif</option>
+                        <option <?= $data['status'] == 'p' ? 'selected="selected"':null;?> value="p">Pasif</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="progress">İlerleme</label>
+                      <input type="range" class="form-control" id="progress" value="<?= $data['progress']?>" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                      <label for="color">Renk Seçiniz</label>
+                      <input type="color" class="form-control" value="<?= $data['color']?>" id="color" >
+                    </div>
+
+
+                        <?php
+                        
+                         $start_date = date('Y-m-d',strtotime($data['start_date']));
+                         $start_date_time = date('H:i',strtotime($data['start_date']));
+                         $end_date = date('Y-m-d',strtotime($data['end_date']));
+                         $end_date_time = date('H:i',strtotime($data['end_date']));
+                        ?>
+
+                    <div class="form-group">
+                      <label for="start_date">Başlangıç Tarihi</label>
+                      <div class="row">
+                        <input type="date" value="<?= $start_date?>"  class="form-control col-8" id="start_date">
+                        <input type="time" value="<?= $start_date_time?>"   class="form-control col-4" id="start_date_time">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="end_date">Bitiş Tarihi</label>
+                      <div class="row">
+                        <input type="date" value="<?= $end_date;?>" class="form-control col-8" id="end_date">
+                        <input type="time" value="<?= $end_date_time;?>" class="form-control col-4" id="end_date_time">
+                      </div>
                     </div>
                   </div>
+
                   <div class="card-footer">
                     <button type="submit" name="submit" value="1" class="btn btn-primary">Güncelle</button>
                   </div>
@@ -46,6 +99,68 @@
 </div>
 <script src="<?= assets('plugins/jquery/jquery.min.js'); ?>"></script>
 <script src="<?= assets('plugins/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
+<script src="<?= assets('plugins/sweetalert2/sweetalert2.all.js');?>"></script>
 <script src="<?= assets('js/adminlte.min.js'); ?>"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js" integrity="sha512-QTnb9BQkG4fBYIt9JGvYmxPpd6TBeKp6lsUrtiVQsrJ9sb33Bn9s0wMQO9qVBFbPX3xHRAsBHvXlcsrnJjExjg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+  const todo = document.getElementById('todo');
+
+  let progress = document.getElementById('progress');
+
+  progress.addEventListener('change',(e) =>{
+    console.log(progress.value);
+  })
+
+  todo.addEventListener('submit',(e) => {
+
+    let id = document.getElementById('id').value;
+    let title = document.getElementById('title').value;
+    let description = document.getElementById('description').value; 
+    let category_id = document.getElementById('category_id').value;
+    let color = document.getElementById('color').value;
+    let start_date = document.getElementById('start_date').value;
+    let end_date = document.getElementById('end_date').value;
+    let start_date_time = document.getElementById('start_date_time').value;
+    let end_date_time = document.getElementById('end_date_time').value;
+    let status = document.getElementById('status').value;
+    let progress = document.getElementById('progress').value;
+
+
+
+    let formData = new FormData();
+
+    formData.append('id',id);
+    formData.append('title',title);
+    formData.append('description',description);
+    formData.append('category_id',category_id);
+    formData.append('color',color);
+    formData.append('start_date',start_date);
+    formData.append('end_date',end_date);
+    formData.append('start_date_time',start_date_time);
+    formData.append('end_date_time',end_date_time);
+    formData.append('status',status);
+    formData.append('progress',progress);
+
+    
+    
+    axios.post('<?= url('api/edittodo') ?>',formData).then(res => {
+
+      if(res.data.redirect){
+        window.location.href = res.data.redirect;
+      }else{
+        swal.fire(
+        res.data.title,
+        res.data.msg,
+        res.data.status
+      );
+      }
+      console.log(res)
+    }).catch(err => console.log(err))
+
+    e.preventDefault();
+  })
+
+</script>
 </body>
-</html> 
+</html>
