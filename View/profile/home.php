@@ -20,64 +20,61 @@
           <div class="col-lg-12">
             <div class="card card-primary">
                 <div class="card-header">
-                  <h3 class="card-title">Yapılacaklar Listenize Ekleyin</h3>
+                  <h3 class="card-title">Profiliniz</h3>
                 </div>
                 <?php echo get_session('error') ? '<div class="alert alert-'.$_SESSION['error']['type'].'">'.$_SESSION['error']['message'].'</div>' : null ?>
 
-                <form id="todo" action="" method="post">
+                <form id="profile" action="" method="post">
                   <div class="card-body">
-                 
-                  <div class="form-group">
-                      <label for="title">Kategori Seçiniz</label>
-                      <select class="form-control" id="category_id">
-                        <option value="0">- Kategori Seçimi Yapınız -</option>
-                        <?php  foreach ($data as $category): ?>
-                        <option value="<?= $category['id'] ?>"><?= $category['title'] ?></option>
-                        <?php endforeach; ?>
-                      </select>
+                    <div class="form-group">
+                      <label for="isim">İsim</label>
+                      <input type="text" class="form-control" id="isim">
                     </div>
                     <div class="form-group">
-                      <label for="title">Başlık</label>
-                      <input type="text" class="form-control" id="title" name="title" placeholder="Ne yapacaksınız">
+                      <label for="soyisim">Soyisim</label>
+                      <input type="text" class="form-control" id="description">
                     </div>
                     <div class="form-group">
-                      <label for="description">Açıklama</label>
-                      <input type="text" class="form-control" id="description" name="description" placeholder="Ne yapacaksınız">
+                      <label for="email">E-Posta</label>
+                      <input type="text" class="form-control" id="email">
                     </div>
-                    <div class="form-group">
-                      <label for="status">Durum</label>
-                      <select id="status">
-                        <option value="a">Aktif</option>
-                        <option value="p">Pasif</option>
-                        <option value="s">Süreçte</option>
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label for="progress">İlerleme</label>
-                      <input type="range" class="form-control" id="progress" min="0" max="100">
-                    </div>
-                    <div class="form-group">
-                      <label for="color">Renk Seçiniz</label>
-                      <input type="color" class="form-control" value="#007bff" id="color" >
-                    </div>
-                    <div class="form-group">
-                      <label for="start_date">Başlangıç Tarihi</label>
-                      <div class="row">
-                        <input type="date" class="form-control col-8" id="start_date">
-                        <input type="time" class="form-control col-4" id="start_date_time">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="end_date">Bitiş Tarihi</label>
-                      <div class="row">
-                        <input type="date" class="form-control col-8" id="end_date">
-                        <input type="time" class="form-control col-4" id="end_date_time">
-                      </div>
-                    </div>
+
+                    
                   </div>
 
                   <div class="card-footer">
-                    <button type="submit" name="submit" value="1" class="btn btn-primary">Ekle</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                  </div>
+                </form>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">Şifrenizi Değiştirin</h3>
+                </div>
+                <?php echo get_session('error') ? '<div class="alert alert-'.$_SESSION['error']['type'].'">'.$_SESSION['error']['message'].'</div>' : null ?>
+
+                <form id="password_change" action="" method="post">
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label for="old_password">Geçerli Şifreniz</label>
+                      <input type="password" class="form-control" id="old_password">
+                    </div>
+                    <div class="form-group">
+                      <label for="password">Yeni Şifreniz</label>
+                      <input type="password" class="form-control" id="password">
+                    </div>
+                    <div class="form-group">
+                      <label for="password_again">Tekrar Şifreniz</label>
+                      <input type="password" class="form-control" id="email">
+                    </div>
+
+                    
+                  </div>
+
+                  <div class="card-footer">
+                    <button type="submit" name="submit" value="1" class="btn btn-primary">Güncelle</button>
                   </div>
                 </form>
             </div>
