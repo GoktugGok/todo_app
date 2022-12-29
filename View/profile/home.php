@@ -22,26 +22,22 @@
                 <div class="card-header">
                   <h3 class="card-title">Profiliniz</h3>
                 </div>
-                <?php echo get_session('error') ? '<div class="alert alert-'.$_SESSION['error']['type'].'">'.$_SESSION['error']['message'].'</div>' : null ?>
 
                 <form id="profile" action="" method="post">
                   <div class="card-body">
                     <div class="form-group">
                       <label for="isim">İsim</label>
-                      <input type="text" class="form-control" id="isim">
+                      <input type="text" class="form-control" value="<?= get_session('name') ?>" id="isim">
                     </div>
                     <div class="form-group">
                       <label for="soyisim">Soyisim</label>
-                      <input type="text" class="form-control" id="description">
+                      <input type="text" class="form-control" value="<?= get_session('surname') ?>" id="soyisim">
                     </div>
                     <div class="form-group">
                       <label for="email">E-Posta</label>
-                      <input type="text" class="form-control" id="email">
+                      <input type="text" class="form-control" value="<?= get_session('email') ?>" id="email">
                     </div>
-
-                    
                   </div>
-
                   <div class="card-footer">
                     <button type="submit" class="btn btn-primary">Güncelle</button>
                   </div>
@@ -53,26 +49,21 @@
                 <div class="card-header">
                   <h3 class="card-title">Şifrenizi Değiştirin</h3>
                 </div>
-                <?php echo get_session('error') ? '<div class="alert alert-'.$_SESSION['error']['type'].'">'.$_SESSION['error']['message'].'</div>' : null ?>
-
                 <form id="password_change" action="" method="post">
                   <div class="card-body">
                     <div class="form-group">
                       <label for="old_password">Geçerli Şifreniz</label>
-                      <input type="password" class="form-control" id="old_password">
+                      <input type="text" class="form-control" id="old_password">
                     </div>
                     <div class="form-group">
                       <label for="password">Yeni Şifreniz</label>
-                      <input type="password" class="form-control" id="password">
+                      <input type="text" class="form-control" id="password">
                     </div>
                     <div class="form-group">
                       <label for="password_again">Tekrar Şifreniz</label>
-                      <input type="password" class="form-control" id="email">
-                    </div>
-
-                    
+                      <input type="text" class="form-control" id="password_again">
+                    </div>                   
                   </div>
-
                   <div class="card-footer">
                     <button type="submit" name="submit" value="1" class="btn btn-primary">Güncelle</button>
                   </div>
@@ -92,60 +83,64 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js" integrity="sha512-QTnb9BQkG4fBYIt9JGvYmxPpd6TBeKp6lsUrtiVQsrJ9sb33Bn9s0wMQO9qVBFbPX3xHRAsBHvXlcsrnJjExjg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 
-  const todo = document.getElementById('todo');
+  const profile = document.getElementById('profile');
+  const password_change = document.getElementById('password_change');
+  
+  profile.addEventListener('submit',(e) => {
 
-  let progress = document.getElementById('progress');
-
-  progress.addEventListener('change',(e) =>{
-    console.log(progress.value);
-  })
-
-  todo.addEventListener('submit',(e) => {
-
-    let title = document.getElementById('title').value;
-    let description = document.getElementById('description').value; 
-    let category_id = document.getElementById('category_id').value;
-    let color = document.getElementById('color').value;
-    let start_date = document.getElementById('start_date').value;
-    let end_date = document.getElementById('end_date').value;
-    let start_date_time = document.getElementById('start_date_time').value;
-    let end_date_time = document.getElementById('end_date_time').value;
-    let status = document.getElementById('status').value;
-    let progress = document.getElementById('progress').value;
-
-
+    let isim = document.getElementById('isim').value;
+    let soyisim = document.getElementById('soyisim').value; 
+    let email = document.getElementById('email').value;
 
     let formData = new FormData();
 
-    formData.append('title',title);
-    formData.append('description',description);
-    formData.append('category_id',category_id);
-    formData.append('color',color);
-    formData.append('start_date',start_date);
-    formData.append('end_date',end_date);
-    formData.append('start_date_time',start_date_time);
-    formData.append('end_date_time',end_date_time);
-    formData.append('status',status);
-    formData.append('progress',progress);
+    formData.append('isim',isim);
+    formData.append('soyisim',soyisim);
+    formData.append('email',email);
 
-    
-    
-    axios.post('<?= url('api/addtodo') ?>',formData).then(res => {
+    axios.post('<?= url('api/profile') ?>',formData).then(res => {
 
-      if(res.data.redirect){
-        window.location.href = res.data.redirect;
-      }else{
-        swal.fire(
+      swal.fire(
         res.data.title,
         res.data.msg,
         res.data.status
       );
+
+      function zamanlıyıcı() {
+        setTimeout(function(){ location.reload();}, 1000);
       }
+
+    console.log(res);
+    zamanlıyıcı();
+    }).catch(err => console.log(err))
+
+    e.preventDefault();
+  });
+
+  password_change.addEventListener('submit',(e) => {
+    
+    let old_password = document.getElementById('old_password').value;
+    let password = document.getElementById('password').value; 
+    let password_again = document.getElementById('password_again').value;
+
+    let formData = new FormData();
+
+    formData.append('old_password',old_password);
+    formData.append('password',password);
+    formData.append('password_again',password_again);
+
+    axios.post('<?= url('api/passwordchange') ?>',formData).then(res => {
+
+      swal.fire(
+        res.data.title,
+        res.data.msg,
+        res.data.status
+      );
       console.log(res)
     }).catch(err => console.log(err))
 
     e.preventDefault();
-  })
+    });
 
 </script>
 </body>

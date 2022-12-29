@@ -214,3 +214,108 @@ elseif(route(1) == 'calendar'){
     $array = $q->fetchAll(PDO::FETCH_ASSOC);
     echo json_encode($array);
 }
+
+if(route(1) == 'profile'){
+    $post = filter($_POST);
+
+    if (!$post['isim']) {
+        $status = 'error';
+        $title = 'Ops! Dikkat';
+        $msg = 'Lütfen isminizi boş bırakmayın';
+        echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+        exit();
+    }
+    if (!$post['soyisim']) {
+        $status = 'error';
+        $title = 'Ops! Dikkat';
+        $msg = 'Lütfen soyisminizi boş bırakmayın';
+        echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+        exit();
+    }
+    if (!$post['email']) {
+        $status = 'error';
+        $title = 'Ops! Dikkat';
+        $msg = 'Lütfen eposta adresinizi boş bırakmayın';
+        echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+        exit();
+    }
+
+    $isim = $post['isim'];
+    $soyisim = $post['soyisim'];
+    $email = $post['email'];
+    $id = get_session('id');
+    $q = $db->query("UPDATE user SET email= '$email' , name= '$isim', surname= '$soyisim' WHERE user.id= '$id' ");
+
+    if ($q) {
+
+        add_session('name',$isim);
+        add_session('surname',$soyisim);
+        add_session('fullname', $isim.' '.$soyisim);
+        add_session('email', $email);
+
+        
+        $status = 'success';
+        $title = 'Başarılı';
+        $msg = 'Profiliniz güncelllendi';
+        echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+    }else{
+        $status = 'error';
+        $title = 'Ops! Dikkat';
+        $msg = 'Bir hata meydana geldi';
+        echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+        exit();
+    }
+}   
+
+if(route(1) == 'passwordchange'){
+
+    $post = filter($_POST);
+
+    if (!$post['old_password'] || (get_session('password') != md5($post['old_password'])) ) {
+        $status = 'error';
+        $title = 'Ops! Dikkat';
+        $msg = 'Lütfen şuan kullanmakta olduğunuz şifreyi doğru giriniz';
+        echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+        exit();
+    }
+
+    $kucuk = preg_match('#[a-z]#' , $post['password']);
+    $buyuk = preg_match('#[A-Z]#' , $post['password']);
+    $sayi = preg_match('#[0-9]#' , $post['password']);
+
+    if(!$post['password'] || !$kucuk || !$buyuk || !$sayi || strlen($post['password']) < 6){
+        $status = 'error';
+        $title = 'Ops! Dikkat';
+        $msg = 'Şifreniz en az altı karekter olmalı büyük küçük harf içermelidir';
+        echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+        exit();
+    }
+
+    if (!$post['password'] || !$post['password_again'] || $post['password'] != $post['password_again']){
+        $status = 'error';
+        $title = 'Ops! Dikkat';
+        $msg = 'Yeni şifreniz birbiriyle uyuşmuyor';
+        echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+        exit();
+    }
+
+    $p = md5($post['password']);
+    $id = get_session('id');
+    $upd =  $db->query("UPDATE user SET password= '$p' WHERE user.id= '$id'");
+
+    if ($upd) {
+        add_session('password',$p);
+
+        $status = 'success';
+        $title = 'Başarılı';
+        $msg = 'Şifreniz güncelllendi';
+        echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+        exit();
+    }else{
+        $status = 'error';
+        $title = 'Ops! Dikkat';
+        $msg = 'Bir hata meydana geldi';
+        echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+        exit();
+    }
+}
